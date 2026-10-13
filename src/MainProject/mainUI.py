@@ -67,8 +67,8 @@ class mainwindow(QMainWindow):
         sortVisualCell = QGridLayout() # 3개 정렬 시각화 및 나머지 하나는 현재 작동 정보 작성
 
     # --------------상단 구역 ( 알고리즘 작동 정보 구역 )------------------
-        infoLabel = QLabel("상단 구역용 임시 Label")
-        infoLabel.setStyleSheet("background-color: #ff0000;")
+        infoLabel = QLabel("왼쪽 위부터 각 삽입 정렬, 버블 정렬, 퀵정렬입니다. (각 step별 delay = 10ms)")
+        infoLabel.setStyleSheet("background-color: #ffffff;")
 
         BigLayout.addWidget(infoLabel, 0)
 
@@ -80,7 +80,7 @@ class mainwindow(QMainWindow):
 
         sortVisualCell.addLayout(self.sortInfo, 1, 1)
 
-        label4 = QLabel("Area 4")
+        label4 = QLabel("Area 4") # 구역 4를 다시 한번 또 Grid로 줘서 위치별 정보를 주고 우측 하단은 진행 시간이라던가 그런 정보를 보여줘도 괜찮을지도?
         label4.setStyleSheet("background-color: #00ffff;")
 
         self.sortArea1.AreaUpdate(self.rndlist)
@@ -93,11 +93,11 @@ class mainwindow(QMainWindow):
     # -----------------하단 구역 ( 기능 제어 구역 )--------------------
         underButtonBox = QHBoxLayout()
 
-        area1SortButton = QPushButton("TEST1")
+        area1SortButton = QPushButton("Area 1 - Insert")
         area1SortButton.setStyleSheet("background-color: #aaaaff;")
         area1SortButton.clicked.connect(self.InsertRun)
 
-        area2SortButton = QPushButton("TEST2")
+        area2SortButton = QPushButton("Area 2 - Bubble")
         area2SortButton.setStyleSheet("background-color: #aaaaff;")
         area2SortButton.clicked.connect(self.BubbleRun)
 
