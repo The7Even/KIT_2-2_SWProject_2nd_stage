@@ -5,13 +5,12 @@ from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot
 from AreaInit import sortArea
 
 class InsertSort(QThread):
-    update_screen = pyqtSignal(list) # 스레드에서 UI 갱신 요청용. 이후 빨갛게 바꾸는것도 추가 예정
+    update_screen = pyqtSignal(list) # 스레드에서 UI 갱신 요청용.
     pointRecolor = pyqtSignal(int, str) # 이렇게 하면 되려나?
 
     def __init__(self, data_list):
         super().__init__()
         self.data_list = list(data_list)
-        self.is_running = True
 
     def run(self):
         lst = self.data_list
@@ -42,3 +41,29 @@ class InsertSort(QThread):
             time.sleep(0.01)
             self.pointRecolor.emit(breakPos, 'white') # 다시 하얘지기
             self.pointRecolor.emit(breakPos-1, 'white') # 너도 하얘지면 초기값
+
+class BubbleSort(QThread):
+    update_screen = pyqtSignal(list)  # 이것들은 공통이라 사실..
+    pointRecolor = pyqtSignal(int, str)
+
+    def __init__(self, data_list):
+        super().__init__()
+        self.data_list = list(data_list)
+
+    def run(self):
+        lst = self.data_list
+
+        for i in range(63):  # 일단 여기는 종료 지점을 [63]에서 [1]까지 줄여야하기 때문에.. 총 63회 반복해야 함.
+            for j in range(63 - i):  # 여기는 [0]과 [1], [1]과 [2]... 해서 끝까지 가는 반복문
+                if j != 0:
+                    self.pointRecolor.emit(j-1, 'white')
+                self.pointRecolor.emit(j, 'red')
+                self.pointRecolor.emit(j+1, 'red')
+                if lst[j] > lst[j + 1]:
+                    lst[j], lst[j + 1] = lst[j + 1], lst[j]  # 와 이런식으로도 바꿀수가 있네
+                    self.update_screen.emit(list(lst))
+                    time.sleep(0.01)
+                time.sleep(0.01)
+
+            self.pointRecolor.emit(j, 'white')
+            self.pointRecolor.emit(j+1, 'white')
