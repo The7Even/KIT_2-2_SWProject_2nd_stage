@@ -3,23 +3,23 @@ from PyQt6.QtWidgets import *
 
 import random
 
-class sortArea: # 그리드 레이아웃과 데이터를 받아와야함.
+class sortArea: # 64열 시각화 막대 그래프 구역
     def __init__(self, sortArea: QGridLayout, Upper: QGridLayout, row, column):
-        self.sortArea = sortArea
-        self.sortArea.setSpacing(0)
+        self.sortArea = sortArea # 기본 설정과
+        self.sortArea.setSpacing(0) # 원래 쓰던 시각화 설정
         self.sortArea.setContentsMargins(0, 0, 0, 0)
-        Upper.addLayout(self.sortArea, row, column)
+        Upper.addLayout(self.sortArea, row, column) # 부모 설정까지
 
     def AreaUpdate(self, list):
         for i in reversed(range(self.sortArea.count())): # 그리드 청소용 코드 (퍼왔음)
             self.sortArea.itemAt(i).widget().deleteLater()
 
-        for i in range(64):
+        for i in range(64): # 비우고 주어진 데이터로 새롭게 막대그래프 그려넣기
             label = QLabel()
             label.setStyleSheet("background-color: #ffffff; border: 1px solid #000000;")
             self.sortArea.addWidget(label, 63-list[i], i, list[i], 1)
 
-    def TestUI(self, num):
+    def TestUI(self, num): # 임시용 땜빵라벨
         label = QLabel(f"Area {num}")
         color = f'{random.randrange(0, 256):02X}'+f'{random.randrange(0, 256):02X}'+f'{random.randrange(0, 256):02X}'
         label.setStyleSheet(f"background-color: #{color};")

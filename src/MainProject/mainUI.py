@@ -26,7 +26,7 @@ class mainwindow(QMainWindow):
         BigLayout.addWidget(infoLabel, 0)
 
     # 중단 구역 ( 알고리즘 시각화 구역 )
-        sortArea1 = sortArea(QGridLayout(), sortVisualCell, 0, 0)
+        sortArea1 = sortArea(QGridLayout(), sortVisualCell, 0, 0) # 커스텀 클래스 기반 시각화 구역
         sortArea2 = sortArea(QGridLayout(), sortVisualCell,0, 1)
         sortArea3 = sortArea(QGridLayout(), sortVisualCell,1, 0)
         sortInfo = QVBoxLayout()
