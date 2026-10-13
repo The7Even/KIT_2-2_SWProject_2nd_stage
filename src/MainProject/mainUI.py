@@ -33,7 +33,6 @@ class mainwindow(QMainWindow):
             self.rndlist.append(tar)
             randomList.remove(tar)  # 길이 64의 랜덤리스트 생성
 
-        print(self.rndlist)
         a1.AreaUpdate(self.rndlist)
         a2.AreaUpdate(self.rndlist)
         a3.AreaUpdate(self.rndlist)
