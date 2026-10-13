@@ -1,4 +1,4 @@
-import random
+import time
 
 from AreaInit import sortArea
 
@@ -17,5 +17,5 @@ def insertSort(Area:sortArea, list):
 
         list.remove(num)
         list.insert(breakPos, num)
+        Area.AreaUpdate(list)
 
-    Area.AreaUpdate(list)
