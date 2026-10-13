@@ -5,11 +5,34 @@ import random
 import sys
 
 from AreaInit import sortArea
+from SortAlgorithm import *
 
 class mainwindow(QMainWindow):
+    rndlist = []
+
     def __init__(self):
+        for i in range(64):
+            self.rndlist.append(i)
+
         super().__init__()
         self.ui_init()
+
+
+    def createRndlist(self, a1:sortArea, a2:sortArea, a3:sortArea):
+        self.rndlist = []
+        randomList = []
+        for i in range(64):
+            randomList.append(i)  # 랜덤 리스트 index 0~63 채워넣기
+
+        for i in range(64):
+            tar = randomList[random.randint(0, len(randomList) - 1)]
+            self.rndlist.append(tar)
+            randomList.remove(tar)  # 길이 64의 랜덤리스트 생성
+
+        print(self.rndlist)
+        a1.AreaUpdate(self.rndlist)
+        a2.AreaUpdate(self.rndlist)
+        a3.AreaUpdate(self.rndlist)
 
     def ui_init(self): # 기초 UI 구성
         self.setFixedSize(1280, 720) # 가로 1280 - 세로 720의 16:9비
@@ -19,13 +42,13 @@ class mainwindow(QMainWindow):
     # GridBox로 구상을 하는게 어떨지... GridBox로 64*64 크기쓰면 괜찮을 거 같은데..
         sortVisualCell = QGridLayout() # 3개 정렬 시각화 및 나머지 하나는 현재 작동 정보 작성
 
-    # 상단 구역 ( 알고리즘 작동 정보 구역 )
+    # --------------상단 구역 ( 알고리즘 작동 정보 구역 )------------------
         infoLabel = QLabel("상단 구역용 임시 Label")
         infoLabel.setStyleSheet("background-color: #ff0000;")
 
         BigLayout.addWidget(infoLabel, 0)
 
-    # 중단 구역 ( 알고리즘 시각화 구역 )
+    # -----------------중단 구역 ( 알고리즘 시각화 구역 )--------------------
         sortArea1 = sortArea(QGridLayout(), sortVisualCell, 0, 0) # 커스텀 클래스 기반 시각화 구역
         sortArea2 = sortArea(QGridLayout(), sortVisualCell,0, 1)
         sortArea3 = sortArea(QGridLayout(), sortVisualCell,1, 0)
@@ -36,26 +59,27 @@ class mainwindow(QMainWindow):
         label4 = QLabel("Area 4")
         label4.setStyleSheet("background-color: #00ffff;")
 
-        testList = [ ]
-        for i in range(64):
-            testList.append(i)
-
-        sortArea1.AreaUpdate(testList)
-        sortArea2.AreaUpdate(testList)
-        sortArea3.TestUI(3)
+        sortArea1.AreaUpdate(self.rndlist)
+        sortArea2.AreaUpdate(self.rndlist)
+        sortArea3.AreaUpdate(self.rndlist)
         sortInfo.addWidget(label4)
 
         BigLayout.addLayout(sortVisualCell, 1)
 
-    # 하단 구역 ( 기능 제어 구역 )
+    # -----------------하단 구역 ( 기능 제어 구역 )--------------------
         underButtonBox = QHBoxLayout()
-        testButton = QPushButton("TEST")
-        testButton.setStyleSheet("background-color: #ffff00;")
-        underButtonBox.addWidget(testButton)
+        area1SortButton = QPushButton("TEST1")
+        area1SortButton.setStyleSheet("background-color: #aaaaff;")
+        area1SortButton.clicked.connect(lambda: insertSort(sortArea1, self.rndlist))
+        shuffleButton = QPushButton("Shuffle")
+        shuffleButton.setStyleSheet("background-color: #aaaaff;")
+        shuffleButton.clicked.connect(lambda: self.createRndlist(sortArea1, sortArea2, sortArea3))
+        underButtonBox.addWidget(shuffleButton)
+        underButtonBox.addWidget(area1SortButton)
 
         BigLayout.addLayout(underButtonBox,0)
 
-    # 마감 구역 ( 시각화 처리 )
+    # ------------------마감 구역 ( 시각화 처리 )-----------------------
         widget = QWidget()
         widget.setLayout(BigLayout)
         self.setCentralWidget(widget)
