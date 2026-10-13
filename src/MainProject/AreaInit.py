@@ -3,26 +3,32 @@ from PyQt6.QtWidgets import *
 
 import random
 
-from numpy import fft
-
-
 class sortArea: # 64열 시각화 막대 그래프 구역
+    # 윈도우 기본 크기 720중에서 640 할당. 뭐 부족하면 윈도우 좀 더 잡아당기지.
+    # 640 할당인데 2행이므로 한칸당 320 배정됨. 길이값 1당 5픽셀
     saved_list = []
-    def __init__(self, sortArea: QGridLayout, Upper: QGridLayout, row, column):
+    def __init__(self, sortArea: QHBoxLayout, Upper: QGridLayout, row, column):
         self.sortArea = sortArea # 기본 설정과
         self.sortArea.setSpacing(0) # 원래 쓰던 시각화 설정
         self.sortArea.setContentsMargins(0, 0, 0, 0)
         Upper.addLayout(self.sortArea, row, column) # 부모 설정까지
 
-    def AreaUpdate(self, list):
-        self.saved_list = list
-        for i in reversed(range(self.sortArea.count())): # 그리드 청소용 코드 (퍼왔음)
-            self.sortArea.itemAt(i).widget().deleteLater()
+        self.bars = []
+        self.sortArea.setAlignment(Qt.AlignmentFlag.AlignBottom) # 길이 조정해도 밑으로 쏠리게
 
-        for i in range(64): # 비우고 주어진 데이터로 새롭게 막대그래프 그려넣기
+        for i in range(64):
             label = QLabel()
             label.setStyleSheet("background-color: #ffffff; border: 1px solid #000000;")
-            self.sortArea.addWidget(label, 63-list[i], i, list[i], 1)
+            self.bars.append(label)
+            sortArea.addWidget(label, 0, Qt.AlignmentFlag.AlignBottom)
+
+    def AreaUpdate(self, list):
+        self.saved_list = list
+        for i in range(64):
+            barLength = list[i]+1
+
+            self.bars[i].setFixedHeight(barLength*5)
+
 
     def AreaRecolor(self, index, color): # 시각화에서 비교중인 값 시각화용
         if color == 'red':
@@ -31,7 +37,7 @@ class sortArea: # 64열 시각화 막대 그래프 구역
             hex='ffff'
         label = QLabel()
         label.setStyleSheet(f"background-color: #ff{hex}; border: 1px solid #000000;")
-        self.sortArea.addWidget(label, 63-self.saved_list[index], index, self.saved_list[index], 1)
+        self.sortArea.addWidget(label, 63-self.saved_list[index], index, self.saved_list[index]+1, 1)
 
 
     def TestUI(self, num): # 임시용 땜빵라벨

@@ -1,6 +1,33 @@
 import time
 
+from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot
+
 from AreaInit import sortArea
+
+class InsertSort(QThread):
+    update_screen = pyqtSignal(list)
+
+    def __init__(self, data_list):
+        super().__init__()
+        self.data_list = list(data_list)
+        self.is_running = True
+
+    def run(self):
+        lst = self.data_list
+
+        for i in range(64):
+            num = lst[i]
+            breakPos = 0
+
+            for j in range(i):
+                if num > lst[i-1-j]:
+                    breakPos = i-j
+                    break
+
+            lst.remove(num)
+            lst.insert(breakPos, num)
+            self.update_screen.emit(list(lst))
+            time.sleep(0.1)
 
 def insertSort(Area:sortArea, list):
     Area.AreaUpdate(list) # 초기값 세팅

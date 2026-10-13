@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtWidgets import *
 
 import random
@@ -11,12 +11,15 @@ class mainwindow(QMainWindow):
     rndlist = []
 
     def __init__(self):
+        super().__init__()
+
         for i in range(64):
             self.rndlist.append(i)
 
-        super().__init__()
-        self.ui_init()
+        # -----------------스레드 구역 (시각화 처리 )-----------------------
+        self.insertThread = None
 
+        self.ui_init()
 
     def createRndlist(self, a1:sortArea, a2:sortArea, a3:sortArea):
         self.rndlist = []
@@ -34,6 +37,15 @@ class mainwindow(QMainWindow):
         a2.AreaUpdate(self.rndlist)
         a3.AreaUpdate(self.rndlist)
 
+    def InsertRun(self):
+        if self.insertThread is not None and self.insertThread.isRunning():
+            return
+
+        self.insertThread = InsertSort(self.rndlist)
+        self.insertThread.update_screen.connect(self.sortArea1.AreaUpdate)
+
+        self.insertThread.start()
+
     def ui_init(self): # 기초 UI 구성
         self.setFixedSize(1280, 720) # 가로 1280 - 세로 720의 16:9비
         self.setWindowTitle("Sort Algorithm Visualizer")
@@ -49,31 +61,34 @@ class mainwindow(QMainWindow):
         BigLayout.addWidget(infoLabel, 0)
 
     # -----------------중단 구역 ( 알고리즘 시각화 구역 )--------------------
-        sortArea1 = sortArea(QGridLayout(), sortVisualCell, 0, 0) # 커스텀 클래스 기반 시각화 구역
-        sortArea2 = sortArea(QGridLayout(), sortVisualCell,0, 1)
-        sortArea3 = sortArea(QGridLayout(), sortVisualCell,1, 0)
-        sortInfo = QVBoxLayout()
+        self.sortArea1 = sortArea(QHBoxLayout(), sortVisualCell, 0, 0) # 커스텀 클래스 기반 시각화 구역
+        self.sortArea2 = sortArea(QHBoxLayout(), sortVisualCell,0, 1)
+        self.sortArea3 = sortArea(QHBoxLayout(), sortVisualCell,1, 0)
+        self.sortInfo = QVBoxLayout()
 
-        sortVisualCell.addLayout(sortInfo, 1, 1)
+        sortVisualCell.addLayout(self.sortInfo, 1, 1)
 
         label4 = QLabel("Area 4")
         label4.setStyleSheet("background-color: #00ffff;")
 
-        sortArea1.AreaUpdate(self.rndlist)
-        sortArea2.AreaUpdate(self.rndlist)
-        sortArea3.AreaUpdate(self.rndlist)
-        sortInfo.addWidget(label4)
+        self.sortArea1.AreaUpdate(self.rndlist)
+        self.sortArea2.AreaUpdate(self.rndlist)
+        self.sortArea3.AreaUpdate(self.rndlist)
+        self.sortInfo.addWidget(label4)
 
         BigLayout.addLayout(sortVisualCell, 1)
 
     # -----------------하단 구역 ( 기능 제어 구역 )--------------------
         underButtonBox = QHBoxLayout()
+
         area1SortButton = QPushButton("TEST1")
         area1SortButton.setStyleSheet("background-color: #aaaaff;")
-        area1SortButton.clicked.connect(lambda: insertSort(sortArea1, self.rndlist))
+        area1SortButton.clicked.connect(self.InsertRun)
+
         shuffleButton = QPushButton("Shuffle")
         shuffleButton.setStyleSheet("background-color: #aaaaff;")
-        shuffleButton.clicked.connect(lambda: self.createRndlist(sortArea1, sortArea2, sortArea3))
+        shuffleButton.clicked.connect(lambda: self.createRndlist(self.sortArea1, self.sortArea2, self.sortArea3))
+
         underButtonBox.addWidget(shuffleButton)
         underButtonBox.addWidget(area1SortButton)
 
@@ -84,7 +99,6 @@ class mainwindow(QMainWindow):
         widget.setLayout(BigLayout)
         self.setCentralWidget(widget)
         self.show()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
