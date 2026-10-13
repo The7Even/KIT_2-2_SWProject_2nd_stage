@@ -43,6 +43,7 @@ class mainwindow(QMainWindow):
 
         self.insertThread = InsertSort(self.rndlist)
         self.insertThread.update_screen.connect(self.sortArea1.AreaUpdate)
+        self.insertThread.pointRecolor.connect(self.sortArea1.AreaRecolor)
 
         self.insertThread.start()
 

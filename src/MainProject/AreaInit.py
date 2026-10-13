@@ -29,15 +29,12 @@ class sortArea: # 64열 시각화 막대 그래프 구역
 
             self.bars[i].setFixedHeight(barLength*5)
 
-
     def AreaRecolor(self, index, color): # 시각화에서 비교중인 값 시각화용
         if color == 'red':
             hex='0000'
         else:
             hex='ffff'
-        label = QLabel()
-        label.setStyleSheet(f"background-color: #ff{hex}; border: 1px solid #000000;")
-        self.sortArea.addWidget(label, 63-self.saved_list[index], index, self.saved_list[index]+1, 1)
+        self.bars[index].setStyleSheet(f"background-color: #ff{hex}; border: 1px solid #000000;")
 
 
     def TestUI(self, num): # 임시용 땜빵라벨
