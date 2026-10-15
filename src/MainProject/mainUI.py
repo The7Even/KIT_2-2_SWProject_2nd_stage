@@ -68,6 +68,11 @@ class mainwindow(QMainWindow):
 
         self.quickThread.start()
 
+    def RunAll(self):
+        self.InsertRun()
+        self.BubbleRun()
+        self.QuickRun()
+
     def ui_init(self): # 기초 UI 구성
         self.setFixedSize(1280, 720) # 가로 1280 - 세로 720의 16:9비
         self.setWindowTitle("Sort Algorithm Visualizer")
@@ -115,6 +120,10 @@ class mainwindow(QMainWindow):
         area3SortButton.setStyleSheet("background-color: #aaaaff;")
         area3SortButton.clicked.connect(self.QuickRun)
 
+        allSortButton = QPushButton("Sort All")
+        allSortButton.setStyleSheet("background-color: #aaaaff;")
+        allSortButton.clicked.connect(self.RunAll)
+
         shuffleButton = QPushButton("Shuffle")
         shuffleButton.setStyleSheet("background-color: #aaaaff;")
         shuffleButton.clicked.connect(lambda: self.createRndlist(self.sortArea1, self.sortArea2, self.sortArea3))
@@ -123,6 +132,7 @@ class mainwindow(QMainWindow):
         underButtonBox.addWidget(area1SortButton)
         underButtonBox.addWidget(area2SortButton)
         underButtonBox.addWidget(area3SortButton)
+        underButtonBox.addWidget(allSortButton)
 
         BigLayout.addLayout(underButtonBox,0)
 

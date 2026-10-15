@@ -37,15 +37,16 @@ class sortArea: # 64열 시각화 막대 그래프 구역
             self.bars[pos+i].setFixedHeight(barLength*5)
 
     def AreaRecolor(self, index, color): # 시각화에서 비교중인 값 시각화용
-        if color == 'red':
-            hex='ff0000'
-        elif color == 'blue':
-            hex='0000ff'
-        elif color == 'green':
-            hex='00ff00'
-        else:
-            hex='ffffff'
-        self.bars[index].setStyleSheet(f"background-color: #{hex}; border: 1px solid #000000;")
+        if index >= 0 and index < 64:
+            if color == 'red':
+                hex='ff0000'
+            elif color == 'blue':
+                hex='0000ff'
+            elif color == 'green':
+                hex='00ff00'
+            else:
+                hex='ffffff'
+            self.bars[index].setStyleSheet(f"background-color: #{hex}; border: 1px solid #000000;")
 
 
     def TestUI(self, num): # 임시용 땜빵라벨
