@@ -19,6 +19,7 @@ class mainwindow(QMainWindow):
         # -----------------스레드 구역 (시각화 처리 )-----------------------
         self.insertThread = None
         self.bubbleThread = None
+        self.quickThread = None
 
         self.ui_init()
 
@@ -56,6 +57,16 @@ class mainwindow(QMainWindow):
         self.bubbleThread.pointRecolor.connect(self.sortArea2.AreaRecolor)
 
         self.bubbleThread.start()
+
+    def QuickRun(self):
+        if self.quickThread is not None and self.quickThread.isRunning():
+            return
+
+        self.quickThread = QuickSort(self.rndlist)
+        self.quickThread.update_range_screen.connect(self.sortArea3.AreaRangeUpdate)
+        self.quickThread.pointRecolor.connect(self.sortArea3.AreaRecolor)
+
+        self.quickThread.start()
 
     def ui_init(self): # 기초 UI 구성
         self.setFixedSize(1280, 720) # 가로 1280 - 세로 720의 16:9비
@@ -100,6 +111,10 @@ class mainwindow(QMainWindow):
         area2SortButton.setStyleSheet("background-color: #aaaaff;")
         area2SortButton.clicked.connect(self.BubbleRun)
 
+        area3SortButton = QPushButton("Area 3 - Quick")
+        area3SortButton.setStyleSheet("background-color: #aaaaff;")
+        area3SortButton.clicked.connect(self.QuickRun)
+
         shuffleButton = QPushButton("Shuffle")
         shuffleButton.setStyleSheet("background-color: #aaaaff;")
         shuffleButton.clicked.connect(lambda: self.createRndlist(self.sortArea1, self.sortArea2, self.sortArea3))
@@ -107,6 +122,7 @@ class mainwindow(QMainWindow):
         underButtonBox.addWidget(shuffleButton)
         underButtonBox.addWidget(area1SortButton)
         underButtonBox.addWidget(area2SortButton)
+        underButtonBox.addWidget(area3SortButton)
 
         BigLayout.addLayout(underButtonBox,0)
 

@@ -67,3 +67,85 @@ class BubbleSort(QThread):
 
             self.pointRecolor.emit(j, 'white')
             self.pointRecolor.emit(j+1, 'white')
+
+class QuickSort(QThread):
+    update_range_screen = pyqtSignal(list, int)
+    pointRecolor = pyqtSignal(int, str)
+
+    def __init__(self, data_list):
+        super().__init__()
+        self.data_list = list(data_list)
+
+    def quickReturn(self, list, pos):  # 재귀함수
+        tarlist = list.copy()
+        if len(list) <= 1: return list
+
+        pivot = tarlist[0]
+        self.pointRecolor.emit(pos, 'blue') # 일단 피벗값 시각화처리
+
+        pointLow = 1
+        pointHigh = len(tarlist) - 1  # 좌우포인터
+        self.pointRecolor.emit(pos+pointLow, 'green')
+        self.pointRecolor.emit(pos+pointHigh, 'red')
+
+        while 1: # Low를 초록, High를 빨강으로 표시
+            # 여기서 Low_High 두개 교차할때까지 Loop
+            if tarlist[pointLow] > pivot:
+                self.pointRecolor.emit(pos+pointLow, 'white')
+                self.pointRecolor.emit(pos+pointHigh, 'white')
+                tarlist[pointLow], tarlist[pointHigh] = tarlist[pointHigh], tarlist[pointLow]
+                self.pointRecolor.emit(pos+pointLow, 'green')
+                self.pointRecolor.emit(pos+pointHigh, 'red')
+                self.update_range_screen.emit(tarlist, pos)
+            else:
+                self.pointRecolor.emit(pos+pointLow, 'white')
+                pointLow += 1
+                self.pointRecolor.emit(pos+pointLow, 'green')
+
+            time.sleep(0.01)
+
+            if pointHigh < pointLow:
+                self.pointRecolor.emit(pos + pointLow, 'white')
+                self.pointRecolor.emit(pos + pointHigh, 'white')
+                break
+
+            if tarlist[pointHigh] < pivot:
+                self.pointRecolor.emit(pos+pointLow, 'white')
+                self.pointRecolor.emit(pos+pointHigh, 'white')
+                tarlist[pointLow], tarlist[pointHigh] = tarlist[pointHigh], tarlist[pointLow]
+                self.pointRecolor.emit(pos+pointLow, 'green')
+                self.pointRecolor.emit(pos+pointHigh, 'red')
+                self.update_range_screen.emit(tarlist, pos)
+            else:
+                self.pointRecolor.emit(pos+pointHigh, 'white')
+                pointHigh -= 1
+                self.pointRecolor.emit(pos+pointHigh, 'red')
+
+            time.sleep(0.01)
+
+            if pointHigh < pointLow:
+                self.pointRecolor.emit(pos+pointLow, 'white')
+                self.pointRecolor.emit(pos+pointHigh, 'white')
+                self.pointRecolor.emit(pos, 'white')
+                break
+
+        time.sleep(0.01) # LR 구분 완료 후 pivot값 색상해제 및 전체 색상 해제
+        tarlist[0], tarlist[pointHigh] = tarlist[pointHigh], tarlist[0]
+        left = tarlist[:pointHigh]
+        right = tarlist[pointHigh+1:]
+        self.pointRecolor.emit(pos, 'white')
+        self.update_range_screen.emit(tarlist, pos)
+
+        return self.quickReturn(left, pos) + [pivot] + self.quickReturn(right, pos + pointHigh+1)
+
+    # 시나리오 : 기본 시작 [0~63] pos 0
+    # 1회차 완료 (가정) pivot 31, [0~30] pos 0, [32~63] pos 31
+    # 여기서 알 수 있는것. left구역은 pos 증가 없음.
+    # right 구역은 pivot만큼 pos가 상승해서 전달됨.
+    # 2회차 완료 (가정, 증명), right구역 기준 pivot 42, [32~41] pos 31, [43~63] pos 42
+    # 변경 : right에서는 pos가 덧셈이 아니라 그냥 replace임. pivot값으로 변경되어 전달되게 하면 됨.
+
+    def run(self):
+        lst = self.data_list
+
+        self.quickReturn(lst,0)

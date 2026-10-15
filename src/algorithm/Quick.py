@@ -32,6 +32,41 @@ resultList = quick(resultList)
 print(sortList)
 print(resultList)
 
+def quick2(list): # 시각화용 quick 구상
+    if len(list) <= 1: return list
+
+    pivot = list[0]
+    other = list[1:] # 일단 여기까지는 똑같이 해도 상관없을거같은데..
+
+    pointLow = 0
+    pointHigh = len(other) -1 # 좌우포인터
+
+    while 1:
+        # 여기서 Low_High 두개 교차할때까지 Loop
+        if other[pointLow] > pivot:
+            other[pointLow], other[pointHigh] = other[pointHigh], other[pointLow]
+        else:
+            pointLow += 1
+
+        if pointHigh < pointLow:
+            break
+
+        if other[pointHigh] < pivot:
+            other[pointHigh], other[pointLow] = other[pointLow], other[pointHigh]
+        else:
+            pointHigh -= 1
+
+        if pointHigh < pointLow:
+            break
+
+    left = other[:pointHigh+1]
+    right = other[pointLow:]
+
+    return quick2(left) + [pivot] + quick2(right)
+
+resultList = quick2(sortList)
+print(sortList)
+print(resultList)
 ''' 
 이걸 시각화 어떻게 할 지 고민하는 공간
 
@@ -42,4 +77,9 @@ print(resultList)
 아니면 이걸 좀 다르게 구성하던가..
 
 아무튼 지금 이 상태로 프로젝트에 바로 넣는건 무리가 있어보임. 이걸 정석으로 구현하던지, 아니면 이대로 넣고 시각적으로 삐까뻔쩍하게 수정해주던지..
+
+-------------------------------------------------------------------------------------
+
+와 씨 잠만 생각해보니 재귀함수로 만들면 시각화할때 어캐해야되냐??
+재귀함수 내에서 진행중인 범위 주고 그거 기반으로 해당 범위만 갱신해야되나?
 '''
