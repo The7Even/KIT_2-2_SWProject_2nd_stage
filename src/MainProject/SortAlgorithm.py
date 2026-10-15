@@ -62,7 +62,6 @@ class BubbleSort(QThread):
                 if lst[j] > lst[j + 1]:
                     lst[j], lst[j + 1] = lst[j + 1], lst[j]  # 와 이런식으로도 바꿀수가 있네
                     self.update_screen.emit(list(lst))
-                    time.sleep(0.01)
                 time.sleep(0.01)
 
             self.pointRecolor.emit(j, 'white')
@@ -76,9 +75,9 @@ class QuickSort(QThread):
         super().__init__()
         self.data_list = list(data_list)
 
-    def quickReturn(self, list, pos):  # 재귀함수
-        tarlist = list.copy()
-        if len(list) <= 1: return list
+    def quickReturn(self, list_data, pos):  # 재귀함수
+        tarlist = list_data.copy()
+        if len(list_data) <= 1: return list_data
 
         pivot = tarlist[0]
         self.pointRecolor.emit(pos, 'blue') # 일단 피벗값 시각화처리
@@ -91,16 +90,13 @@ class QuickSort(QThread):
         while 1: # Low를 초록, High를 빨강으로 표시
             # 여기서 Low_High 두개 교차할때까지 Loop
             if tarlist[pointLow] > pivot:
-                self.pointRecolor.emit(pos+pointLow, 'white')
-                self.pointRecolor.emit(pos+pointHigh, 'white')
                 tarlist[pointLow], tarlist[pointHigh] = tarlist[pointHigh], tarlist[pointLow]
-                self.pointRecolor.emit(pos+pointLow, 'green')
-                self.pointRecolor.emit(pos+pointHigh, 'red')
-                self.update_range_screen.emit(tarlist, pos)
+                self.update_range_screen.emit(list(tarlist), pos)
             else:
                 self.pointRecolor.emit(pos+pointLow, 'white')
                 pointLow += 1
-                self.pointRecolor.emit(pos+pointLow, 'green')
+                if pointLow <= pointHigh:
+                    self.pointRecolor.emit(pos+pointLow, 'green')
 
             time.sleep(0.01)
 
@@ -110,16 +106,13 @@ class QuickSort(QThread):
                 break
 
             if tarlist[pointHigh] < pivot:
-                self.pointRecolor.emit(pos+pointLow, 'white')
-                self.pointRecolor.emit(pos+pointHigh, 'white')
                 tarlist[pointLow], tarlist[pointHigh] = tarlist[pointHigh], tarlist[pointLow]
-                self.pointRecolor.emit(pos+pointLow, 'green')
-                self.pointRecolor.emit(pos+pointHigh, 'red')
-                self.update_range_screen.emit(tarlist, pos)
+                self.update_range_screen.emit(list(tarlist), pos)
             else:
                 self.pointRecolor.emit(pos+pointHigh, 'white')
                 pointHigh -= 1
-                self.pointRecolor.emit(pos+pointHigh, 'red')
+                if pointLow <= pointHigh:
+                    self.pointRecolor.emit(pos+pointHigh, 'red')
 
             time.sleep(0.01)
 
@@ -134,7 +127,7 @@ class QuickSort(QThread):
         left = tarlist[:pointHigh]
         right = tarlist[pointHigh+1:]
         self.pointRecolor.emit(pos, 'white')
-        self.update_range_screen.emit(tarlist, pos)
+        self.update_range_screen.emit(list(tarlist), pos)
 
         return self.quickReturn(left, pos) + [pivot] + self.quickReturn(right, pos + pointHigh+1)
 
