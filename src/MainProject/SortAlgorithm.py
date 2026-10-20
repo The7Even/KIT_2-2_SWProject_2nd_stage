@@ -3,12 +3,14 @@ import time
 from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot
 
 from AreaInit import sortArea, ResultLabel
+from mainUI import mainwindow
 
 class InsertSort(QThread):
     update_screen = pyqtSignal(list) # 스레드에서 UI 갱신 요청용.
     pointRecolor = pyqtSignal(int, str) # 이렇게 하면 되려나?
     update_status_compare = pyqtSignal(int)
     update_status_array = pyqtSignal()
+    updateTime = pyqtSignal(int, int)
 
     def __init__(self, data_list):
         super().__init__()
@@ -38,6 +40,7 @@ class InsertSort(QThread):
 
                 self.update_screen.emit(list(lst))
                 time.sleep(0.01)
+                self.updateTime.emit(1, 10)
 
             lst.remove(num)
             lst.insert(breakPos, num)
@@ -45,6 +48,7 @@ class InsertSort(QThread):
             self.pointRecolor.emit(breakPos, 'red') # 여기가 빨개지겠고
             self.update_screen.emit(list(lst))
             time.sleep(0.01)
+            self.updateTime.emit(1, 10)
             self.pointRecolor.emit(breakPos, 'white') # 다시 하얘지기
             self.pointRecolor.emit(breakPos-1, 'white') # 너도 하얘지면 초기값
 
@@ -53,6 +57,7 @@ class BubbleSort(QThread):
     pointRecolor = pyqtSignal(int, str)
     update_status_compare = pyqtSignal(int)
     update_status_array = pyqtSignal()
+    updateTime = pyqtSignal(int, int)
 
     def __init__(self, data_list):
         super().__init__()
@@ -73,6 +78,7 @@ class BubbleSort(QThread):
                     self.update_status_array.emit()
                     self.update_screen.emit(list(lst))
                 time.sleep(0.01)
+                self.updateTime.emit(2, 10)
 
             self.pointRecolor.emit(j, 'white')
             self.pointRecolor.emit(j+1, 'white')
@@ -82,6 +88,7 @@ class QuickSort(QThread):
     pointRecolor = pyqtSignal(int, str)
     update_status_compare = pyqtSignal(int)
     update_status_array = pyqtSignal()
+    updateTime = pyqtSignal(int, int)
 
     def __init__(self, data_list):
         super().__init__()
@@ -113,6 +120,7 @@ class QuickSort(QThread):
 
             self.update_status_compare.emit(1)
             time.sleep(0.01)
+            self.updateTime.emit(3, 10)
 
             if pointHigh < pointLow:
                 self.pointRecolor.emit(pos + pointLow, 'white')
@@ -131,6 +139,7 @@ class QuickSort(QThread):
 
             self.update_status_compare.emit(1)
             time.sleep(0.01)
+            self.updateTime.emit(3, 10)
 
             if pointHigh < pointLow:
                 self.pointRecolor.emit(pos+pointLow, 'white')
@@ -139,6 +148,7 @@ class QuickSort(QThread):
                 break
 
         time.sleep(0.01) # LR 구분 완료 후 pivot값 색상해제 및 전체 색상 해제
+        self.updateTime.emit(3, 10)
         self.update_status_array.emit()
         tarlist[0], tarlist[pointHigh] = tarlist[pointHigh], tarlist[0]
         left = tarlist[:pointHigh]

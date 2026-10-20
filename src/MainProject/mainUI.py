@@ -9,6 +9,7 @@ from SortAlgorithm import *
 
 class mainwindow(QMainWindow):
     rndlist = []
+    spendtime = [0, 0, 0]
 
     def __init__(self):
         super().__init__()
@@ -22,6 +23,11 @@ class mainwindow(QMainWindow):
         self.quickThread = None
 
         self.ui_init()
+
+    @pyqtSlot(int, int)
+    def updateTime(self, index:int, delay:int):
+        self.spendtime[index-1] += 10
+        self.timeResult.setText(f"Time Spent - \nInsertion - {self.spendtime[0]/1000:.2f}s\nBubble - {self.spendtime[1]/1000:.2f}s\nQuick - {self.spendtime[2]/1000:.2f}s")
 
     def createRndlist(self, a1:sortArea, a2:sortArea, a3:sortArea):
         self.rndlist = []
@@ -48,6 +54,7 @@ class mainwindow(QMainWindow):
         self.insertThread.pointRecolor.connect(self.sortArea1.AreaRecolor)
         self.insertThread.update_status_compare.connect(self.result1.compareEvent)
         self.insertThread.update_status_array.connect(self.result1.arrayEvent)
+        self.insertThread.updateTime.connect(self.updateTime)
 
         self.insertThread.start()
 
@@ -61,6 +68,7 @@ class mainwindow(QMainWindow):
         self.bubbleThread.pointRecolor.connect(self.sortArea2.AreaRecolor)
         self.bubbleThread.update_status_compare.connect(self.result2.compareEvent)
         self.bubbleThread.update_status_array.connect(self.result2.arrayEvent)
+        self.bubbleThread.updateTime.connect(self.updateTime)
 
         self.bubbleThread.start()
 
@@ -74,6 +82,7 @@ class mainwindow(QMainWindow):
         self.quickThread.pointRecolor.connect(self.sortArea3.AreaRecolor)
         self.quickThread.update_status_array.connect(self.result3.arrayEvent)
         self.quickThread.update_status_compare.connect(self.result3.compareEvent)
+        self.quickThread.updateTime.connect(self.updateTime)
 
         self.quickThread.start()
 
@@ -107,7 +116,7 @@ class mainwindow(QMainWindow):
         self.result1 = ResultLabel("Insertion")
         self.result2 = ResultLabel("Bubble")
         self.result3 = ResultLabel("Quick")
-        self.timeResult = QLabel("Time Spent - \nInsertion - 0000ms\nBubble - 0000ms\nQuick - 0000ms")
+        self.timeResult = QLabel("Time Spent - \nInsertion - 0s\nBubble - 0s\nQuick - 0s")
 
         self.resultArea.addWidget(self.result1, 0,0)
         self.resultArea.addWidget(self.result2, 0,1)
