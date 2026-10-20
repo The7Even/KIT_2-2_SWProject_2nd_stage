@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt, QObject, pyqtSlot
+from PyQt6.QtCore import Qt, QObject, pyqtSlot, pyqtSignal
 from PyQt6.QtWidgets import *
 
 import random
@@ -51,3 +51,37 @@ class sortArea(QObject): # 64열 시각화 막대 그래프 구역
             else:
                 hex='ffffff'
             self.bars[index].setStyleSheet(f"background-color: #{hex}; border: 1px solid #000000;")
+
+class ResultLabel(QLabel):
+    def __init__(self, sort_type: str):
+        super().__init__()
+        self.compare = 0
+        self.array = 0
+        self.sortType = sort_type
+        self.timeDiff = ''
+
+        self.labelUpdate()
+
+    def reset(self):
+        self.compare = 0
+        self.array = 0
+
+    @pyqtSlot(int)
+    def compareEvent(self, num: int):
+        self.compare += num
+        self.labelUpdate()
+
+    @pyqtSlot()
+    def arrayEvent(self):
+        self.array += 1
+        self.labelUpdate()
+
+    def labelUpdate(self):
+        if self.sortType == 'Insertion':
+            self.timeDiff = 'O(n²)'
+        elif self.sortType == 'Bubble':
+            self.timeDiff = 'O(n²)'
+        elif self.sortType == 'Quick':
+            self.timeDiff = 'O(n log n)'
+
+        self.setText(f"{self.sortType} Sort - {self.timeDiff}\ncomparison - {self.compare} / array access - {self.array}\ndelay - 10ms")

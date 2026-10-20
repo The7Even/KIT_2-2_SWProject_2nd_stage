@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import *
 import random
 import sys
 
-from AreaInit import sortArea
+from AreaInit import sortArea, ResultLabel
 from SortAlgorithm import *
 
 class mainwindow(QMainWindow):
@@ -42,9 +42,12 @@ class mainwindow(QMainWindow):
         if self.insertThread is not None and self.insertThread.isRunning():
             return
 
+        self.result1.reset()
         self.insertThread = InsertSort(self.rndlist)
         self.insertThread.update_screen.connect(self.sortArea1.AreaUpdate)
         self.insertThread.pointRecolor.connect(self.sortArea1.AreaRecolor)
+        self.insertThread.update_status_compare.connect(self.result1.compareEvent)
+        self.insertThread.update_status_array.connect(self.result1.arrayEvent)
 
         self.insertThread.start()
 
@@ -52,9 +55,12 @@ class mainwindow(QMainWindow):
         if self.bubbleThread is not None and self.bubbleThread.isRunning():
             return
 
+        self.result2.reset()
         self.bubbleThread = BubbleSort(self.rndlist)
         self.bubbleThread.update_screen.connect(self.sortArea2.AreaUpdate)
         self.bubbleThread.pointRecolor.connect(self.sortArea2.AreaRecolor)
+        self.bubbleThread.update_status_compare.connect(self.result2.compareEvent)
+        self.bubbleThread.update_status_array.connect(self.result2.arrayEvent)
 
         self.bubbleThread.start()
 
@@ -62,9 +68,12 @@ class mainwindow(QMainWindow):
         if self.quickThread is not None and self.quickThread.isRunning():
             return
 
+        self.result3.reset()
         self.quickThread = QuickSort(self.rndlist)
         self.quickThread.update_range_screen.connect(self.sortArea3.AreaRangeUpdate)
         self.quickThread.pointRecolor.connect(self.sortArea3.AreaRecolor)
+        self.quickThread.update_status_array.connect(self.result3.arrayEvent)
+        self.quickThread.update_status_compare.connect(self.result3.compareEvent)
 
         self.quickThread.start()
 
@@ -95,9 +104,9 @@ class mainwindow(QMainWindow):
         sortVisualCell.addLayout(self.resultArea, 1, 1)
 
     # 구역 4를 다시 한번 또 Grid로 줘서 위치별 정보를 주고 우측 하단은 진행 시간이라던가 그런 정보를 보여줘도 괜찮을지도?
-        self.result1 = QLabel("Insertion Sort - O(n²)\ncomparison - 0 / array access - 0\ndelay - 10ms")
-        self.result2 = QLabel("Bubble Sort - O(n²)\ncomparison - 0 / array access - 0\ndelay - 10ms")
-        self.result3 = QLabel("Quick Sort - O(n log n)\ncomparison - 0 / array access - 0\ndelay - 10ms")
+        self.result1 = ResultLabel("Insertion")
+        self.result2 = ResultLabel("Bubble")
+        self.result3 = ResultLabel("Quick")
         self.timeResult = QLabel("Time Spent - \nInsertion - 0000ms\nBubble - 0000ms\nQuick - 0000ms")
 
         self.resultArea.addWidget(self.result1, 0,0)

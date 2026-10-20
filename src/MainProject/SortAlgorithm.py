@@ -2,11 +2,13 @@ import time
 
 from PyQt6.QtCore import QThread, pyqtSignal, pyqtSlot
 
-from AreaInit import sortArea
+from AreaInit import sortArea, ResultLabel
 
 class InsertSort(QThread):
     update_screen = pyqtSignal(list) # 스레드에서 UI 갱신 요청용.
     pointRecolor = pyqtSignal(int, str) # 이렇게 하면 되려나?
+    update_status_compare = pyqtSignal(int)
+    update_status_array = pyqtSignal()
 
     def __init__(self, data_list):
         super().__init__()
@@ -27,15 +29,19 @@ class InsertSort(QThread):
                 self.pointRecolor.emit(i-1-j, 'red') # 그러니 일단 그자식부터 색칠
                 if j != 0: # j가 0이면 i 자신이기에 조건문
                     self.pointRecolor.emit(i-j, 'white')
+
+                self.update_status_compare.emit(1) # 넌 왜 안되니
                 if num > lst[i-1-j]: # 만약 이 반복문을 빠져나간다면 지켜보고 있는 두 값이 변화함. i-1-j는 그대로겠고, 그리고 i-j값(breakPos)도 빨개짐.
                     breakPos = i-j
                     self.pointRecolor.emit(i, 'white') # 그럼 원래위치는 하얗게 바꾸고
                     break
+
                 self.update_screen.emit(list(lst))
                 time.sleep(0.01)
 
             lst.remove(num)
             lst.insert(breakPos, num)
+            self.update_status_array.emit()
             self.pointRecolor.emit(breakPos, 'red') # 여기가 빨개지겠고
             self.update_screen.emit(list(lst))
             time.sleep(0.01)
@@ -45,6 +51,8 @@ class InsertSort(QThread):
 class BubbleSort(QThread):
     update_screen = pyqtSignal(list)  # 이것들은 공통이라 사실..
     pointRecolor = pyqtSignal(int, str)
+    update_status_compare = pyqtSignal(int)
+    update_status_array = pyqtSignal()
 
     def __init__(self, data_list):
         super().__init__()
@@ -57,10 +65,12 @@ class BubbleSort(QThread):
             for j in range(63 - i):  # 여기는 [0]과 [1], [1]과 [2]... 해서 끝까지 가는 반복문
                 if j != 0:
                     self.pointRecolor.emit(j-1, 'white')
+                self.update_status_compare.emit(1)
                 self.pointRecolor.emit(j, 'red')
                 self.pointRecolor.emit(j+1, 'red')
                 if lst[j] > lst[j + 1]:
                     lst[j], lst[j + 1] = lst[j + 1], lst[j]  # 와 이런식으로도 바꿀수가 있네
+                    self.update_status_array.emit()
                     self.update_screen.emit(list(lst))
                 time.sleep(0.01)
 
@@ -70,6 +80,8 @@ class BubbleSort(QThread):
 class QuickSort(QThread):
     update_range_screen = pyqtSignal(list, int)
     pointRecolor = pyqtSignal(int, str)
+    update_status_compare = pyqtSignal(int)
+    update_status_array = pyqtSignal()
 
     def __init__(self, data_list):
         super().__init__()
@@ -90,6 +102,7 @@ class QuickSort(QThread):
         while 1: # Low를 초록, High를 빨강으로 표시
             # 여기서 Low_High 두개 교차할때까지 Loop
             if tarlist[pointLow] > pivot:
+                self.update_status_array.emit()
                 tarlist[pointLow], tarlist[pointHigh] = tarlist[pointHigh], tarlist[pointLow]
                 self.update_range_screen.emit(list(tarlist), pos)
             else:
@@ -98,6 +111,7 @@ class QuickSort(QThread):
                 if pointLow <= pointHigh:
                     self.pointRecolor.emit(pos+pointLow, 'green')
 
+            self.update_status_compare.emit(1)
             time.sleep(0.01)
 
             if pointHigh < pointLow:
@@ -106,6 +120,7 @@ class QuickSort(QThread):
                 break
 
             if tarlist[pointHigh] < pivot:
+                self.update_status_array.emit()
                 tarlist[pointLow], tarlist[pointHigh] = tarlist[pointHigh], tarlist[pointLow]
                 self.update_range_screen.emit(list(tarlist), pos)
             else:
@@ -114,6 +129,7 @@ class QuickSort(QThread):
                 if pointLow <= pointHigh:
                     self.pointRecolor.emit(pos+pointHigh, 'red')
 
+            self.update_status_compare.emit(1)
             time.sleep(0.01)
 
             if pointHigh < pointLow:
@@ -123,6 +139,7 @@ class QuickSort(QThread):
                 break
 
         time.sleep(0.01) # LR 구분 완료 후 pivot값 색상해제 및 전체 색상 해제
+        self.update_status_array.emit()
         tarlist[0], tarlist[pointHigh] = tarlist[pointHigh], tarlist[0]
         left = tarlist[:pointHigh]
         right = tarlist[pointHigh+1:]
