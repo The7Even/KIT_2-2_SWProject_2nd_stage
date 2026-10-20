@@ -12,9 +12,10 @@ class InsertSort(QThread):
     update_status_array = pyqtSignal()
     updateTime = pyqtSignal(int, int)
 
-    def __init__(self, data_list):
+    def __init__(self, data_list, delay):
         super().__init__()
         self.data_list = list(data_list)
+        self.delay = delay
 
     def run(self):
         lst = self.data_list
@@ -39,16 +40,16 @@ class InsertSort(QThread):
                     break
 
                 self.update_screen.emit(list(lst))
-                time.sleep(0.01)
-                self.updateTime.emit(1, 10)
+                time.sleep(self.delay/1000)
+                self.updateTime.emit(1, self.delay)
 
             lst.remove(num)
             lst.insert(breakPos, num)
             self.update_status_array.emit()
             self.pointRecolor.emit(breakPos, 'red') # 여기가 빨개지겠고
             self.update_screen.emit(list(lst))
-            time.sleep(0.01)
-            self.updateTime.emit(1, 10)
+            time.sleep(self.delay/1000)
+            self.updateTime.emit(1, self.delay)
             self.pointRecolor.emit(breakPos, 'white') # 다시 하얘지기
             self.pointRecolor.emit(breakPos-1, 'white') # 너도 하얘지면 초기값
 
@@ -59,9 +60,10 @@ class BubbleSort(QThread):
     update_status_array = pyqtSignal()
     updateTime = pyqtSignal(int, int)
 
-    def __init__(self, data_list):
+    def __init__(self, data_list, delay):
         super().__init__()
         self.data_list = list(data_list)
+        self.delay = delay
 
     def run(self):
         lst = self.data_list
@@ -77,8 +79,8 @@ class BubbleSort(QThread):
                     lst[j], lst[j + 1] = lst[j + 1], lst[j]  # 와 이런식으로도 바꿀수가 있네
                     self.update_status_array.emit()
                     self.update_screen.emit(list(lst))
-                time.sleep(0.01)
-                self.updateTime.emit(2, 10)
+                time.sleep(self.delay/1000)
+                self.updateTime.emit(2, self.delay)
 
             self.pointRecolor.emit(j, 'white')
             self.pointRecolor.emit(j+1, 'white')
@@ -90,9 +92,10 @@ class QuickSort(QThread):
     update_status_array = pyqtSignal()
     updateTime = pyqtSignal(int, int)
 
-    def __init__(self, data_list):
+    def __init__(self, data_list, delay):
         super().__init__()
         self.data_list = list(data_list)
+        self.delay = delay
 
     def quickReturn(self, list_data, pos):  # 재귀함수
         tarlist = list_data.copy()
@@ -119,8 +122,8 @@ class QuickSort(QThread):
                     self.pointRecolor.emit(pos+pointLow, 'green')
 
             self.update_status_compare.emit(1)
-            time.sleep(0.01)
-            self.updateTime.emit(3, 10)
+            time.sleep(self.delay/1000)
+            self.updateTime.emit(3, self.delay)
 
             if pointHigh < pointLow:
                 self.pointRecolor.emit(pos + pointLow, 'white')
@@ -138,8 +141,8 @@ class QuickSort(QThread):
                     self.pointRecolor.emit(pos+pointHigh, 'red')
 
             self.update_status_compare.emit(1)
-            time.sleep(0.01)
-            self.updateTime.emit(3, 10)
+            time.sleep(self.delay/1000)
+            self.updateTime.emit(3, self.delay)
 
             if pointHigh < pointLow:
                 self.pointRecolor.emit(pos+pointLow, 'white')
@@ -147,8 +150,8 @@ class QuickSort(QThread):
                 self.pointRecolor.emit(pos, 'white')
                 break
 
-        time.sleep(0.01) # LR 구분 완료 후 pivot값 색상해제 및 전체 색상 해제
-        self.updateTime.emit(3, 10)
+        time.sleep(self.delay/1000) # LR 구분 완료 후 pivot값 색상해제 및 전체 색상 해제
+        self.updateTime.emit(3, self.delay)
         self.update_status_array.emit()
         tarlist[0], tarlist[pointHigh] = tarlist[pointHigh], tarlist[0]
         left = tarlist[:pointHigh]

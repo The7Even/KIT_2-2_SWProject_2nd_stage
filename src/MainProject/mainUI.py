@@ -10,6 +10,7 @@ from SortAlgorithm import *
 class mainwindow(QMainWindow):
     rndlist = []
     spendtime = [0, 0, 0]
+    globalDelay = [10, 10, 10] # 여기서 딜레이 시간을 임의로 조정함 (임시)
 
     def __init__(self):
         super().__init__()
@@ -26,7 +27,7 @@ class mainwindow(QMainWindow):
 
     @pyqtSlot(int, int)
     def updateTime(self, index:int, delay:int):
-        self.spendtime[index-1] += 10
+        self.spendtime[index-1] += delay
         self.timeResult.setText(f"Time Spent - \nInsertion - {self.spendtime[0]/1000:.2f}s\nBubble - {self.spendtime[1]/1000:.2f}s\nQuick - {self.spendtime[2]/1000:.2f}s")
 
     def createRndlist(self, a1:sortArea, a2:sortArea, a3:sortArea):
@@ -49,7 +50,8 @@ class mainwindow(QMainWindow):
             return
 
         self.result1.reset()
-        self.insertThread = InsertSort(self.rndlist)
+        self.spendtime[0] = 0
+        self.insertThread = InsertSort(self.rndlist, self.globalDelay[0])
         self.insertThread.update_screen.connect(self.sortArea1.AreaUpdate)
         self.insertThread.pointRecolor.connect(self.sortArea1.AreaRecolor)
         self.insertThread.update_status_compare.connect(self.result1.compareEvent)
@@ -63,7 +65,8 @@ class mainwindow(QMainWindow):
             return
 
         self.result2.reset()
-        self.bubbleThread = BubbleSort(self.rndlist)
+        self.spendtime[1] = 0
+        self.bubbleThread = BubbleSort(self.rndlist, self.globalDelay[1])
         self.bubbleThread.update_screen.connect(self.sortArea2.AreaUpdate)
         self.bubbleThread.pointRecolor.connect(self.sortArea2.AreaRecolor)
         self.bubbleThread.update_status_compare.connect(self.result2.compareEvent)
@@ -77,7 +80,8 @@ class mainwindow(QMainWindow):
             return
 
         self.result3.reset()
-        self.quickThread = QuickSort(self.rndlist)
+        self.spendtime[2] = 0
+        self.quickThread = QuickSort(self.rndlist,self.globalDelay[2])
         self.quickThread.update_range_screen.connect(self.sortArea3.AreaRangeUpdate)
         self.quickThread.pointRecolor.connect(self.sortArea3.AreaRecolor)
         self.quickThread.update_status_array.connect(self.result3.arrayEvent)
@@ -113,9 +117,9 @@ class mainwindow(QMainWindow):
         sortVisualCell.addLayout(self.resultArea, 1, 1)
 
     # 구역 4를 다시 한번 또 Grid로 줘서 위치별 정보를 주고 우측 하단은 진행 시간이라던가 그런 정보를 보여줘도 괜찮을지도?
-        self.result1 = ResultLabel("Insertion")
-        self.result2 = ResultLabel("Bubble")
-        self.result3 = ResultLabel("Quick")
+        self.result1 = ResultLabel("Insertion", self.globalDelay[0])
+        self.result2 = ResultLabel("Bubble", self.globalDelay[1])
+        self.result3 = ResultLabel("Quick", self.globalDelay[2])
         self.timeResult = QLabel("Time Spent - \nInsertion - 0s\nBubble - 0s\nQuick - 0s")
 
         self.resultArea.addWidget(self.result1, 0,0)
