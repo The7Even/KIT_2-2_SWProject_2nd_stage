@@ -51,10 +51,3 @@ class sortArea(QObject): # 64열 시각화 막대 그래프 구역
             else:
                 hex='ffffff'
             self.bars[index].setStyleSheet(f"background-color: #{hex}; border: 1px solid #000000;")
-
-
-    def TestUI(self, num): # 임시용 땜빵라벨
-        label = QLabel(f"Area {num}")
-        color = f'{random.randrange(0, 256):02X}'+f'{random.randrange(0, 256):02X}'+f'{random.randrange(0, 256):02X}'
-        label.setStyleSheet(f"background-color: #{color};")
-        self.sortArea.addWidget(label)
