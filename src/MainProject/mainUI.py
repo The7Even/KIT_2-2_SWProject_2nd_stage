@@ -91,17 +91,23 @@ class mainwindow(QMainWindow):
         self.sortArea1 = sortArea(QHBoxLayout(), sortVisualCell, 0, 0) # 커스텀 클래스 기반 시각화 구역
         self.sortArea2 = sortArea(QHBoxLayout(), sortVisualCell,0, 1)
         self.sortArea3 = sortArea(QHBoxLayout(), sortVisualCell,1, 0)
-        self.sortInfo = QVBoxLayout()
+        self.resultArea = QGridLayout() # 결과 정리용 Grid - 비교연산, 교환연산 진행량 표시, 남는 한칸은 진행 시간 표시.
+        sortVisualCell.addLayout(self.resultArea, 1, 1)
 
-        sortVisualCell.addLayout(self.sortInfo, 1, 1)
+    # 구역 4를 다시 한번 또 Grid로 줘서 위치별 정보를 주고 우측 하단은 진행 시간이라던가 그런 정보를 보여줘도 괜찮을지도?
+        self.result1 = QLabel("Insertion Sort - O(n²)\ncomparison - 0 / array access - 0\ndelay - 10ms")
+        self.result2 = QLabel("Bubble Sort - O(n²)\ncomparison - 0 / array access - 0\ndelay - 10ms")
+        self.result3 = QLabel("Quick Sort - O(n log n)\ncomparison - 0 / array access - 0\ndelay - 10ms")
+        self.timeResult = QLabel("Time Spent - \nInsertion - 0000ms\nBubble - 0000ms\nQuick - 0000ms")
 
-        label4 = QLabel("Area 4") # 구역 4를 다시 한번 또 Grid로 줘서 위치별 정보를 주고 우측 하단은 진행 시간이라던가 그런 정보를 보여줘도 괜찮을지도?
-        label4.setStyleSheet("background-color: #00ffff;")
+        self.resultArea.addWidget(self.result1, 0,0)
+        self.resultArea.addWidget(self.result2, 0,1)
+        self.resultArea.addWidget(self.result3, 1,0)
+        self.resultArea.addWidget(self.timeResult, 1,1)
 
         self.sortArea1.AreaUpdate(self.rndlist)
         self.sortArea2.AreaUpdate(self.rndlist)
         self.sortArea3.AreaUpdate(self.rndlist)
-        self.sortInfo.addWidget(label4)
 
         BigLayout.addLayout(sortVisualCell, 1)
 
