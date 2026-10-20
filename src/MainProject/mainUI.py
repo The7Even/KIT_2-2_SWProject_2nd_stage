@@ -96,7 +96,7 @@ class mainwindow(QMainWindow):
         self.QuickRun()
 
     def ui_init(self): # 기초 UI 구성
-        self.setFixedSize(1280, 720) # 가로 1280 - 세로 720의 16:9비
+        self.setFixedSize(1440, 810) # 가로 1280 - 세로 720의 16:9비
         self.setWindowTitle("Sort Algorithm Visualizer")
 
         BigLayout = QVBoxLayout() # 상단 : 작동 정보, 중단 : 정렬 시각화 구역, 하단 : 버튼모음
@@ -135,6 +135,8 @@ class mainwindow(QMainWindow):
 
     # -----------------하단 구역 ( 기능 제어 구역 )--------------------
         underButtonBox = QHBoxLayout()
+        bottomButtonBox = QHBoxLayout()
+        ButtonLayout = QVBoxLayout()
 
         area1SortButton = QPushButton("Area 1 - Insert")
         area1SortButton.setStyleSheet("background-color: #aaaaff;")
@@ -162,7 +164,16 @@ class mainwindow(QMainWindow):
         underButtonBox.addWidget(area3SortButton)
         underButtonBox.addWidget(allSortButton)
 
-        BigLayout.addLayout(underButtonBox,0)
+        onestepButton = QPushButton("1 Step Progress")
+        onestepButton.setStyleSheet("background-color: #aaaaff;")
+        # onestepButton.clicked.connect() 일단 버튼 추가만 해놓기.
+
+        bottomButtonBox.addWidget(onestepButton)
+
+        ButtonLayout.addLayout(underButtonBox)
+        ButtonLayout.addLayout(bottomButtonBox)
+
+        BigLayout.addLayout(ButtonLayout,0)
 
     # ------------------마감 구역 ( 시각화 처리 )-----------------------
         widget = QWidget()
