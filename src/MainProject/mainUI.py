@@ -107,7 +107,14 @@ class mainwindow(QMainWindow):
         infoLabel = QLabel("왼쪽 위부터 각 삽입 정렬, 버블 정렬, 퀵정렬입니다. (각 step별 delay = 10ms)")
         infoLabel.setStyleSheet("background-color: #ffffff;")
 
-        BigLayout.addWidget(infoLabel, 0)
+        shuffleButton = QPushButton("Shuffle")
+        shuffleButton.setStyleSheet("background-color: #aaaaff;")
+        shuffleButton.clicked.connect(lambda: self.createRndlist(self.sortArea1, self.sortArea2, self.sortArea3))
+
+        upperArea = QHBoxLayout()
+        upperArea.addWidget(infoLabel, 1)
+        upperArea.addWidget(shuffleButton, 0)
+        BigLayout.addLayout(upperArea, 0)
 
     # -----------------중단 구역 ( 알고리즘 시각화 구역 )--------------------
         self.sortArea1 = sortArea(QHBoxLayout(), sortVisualCell, 0, 0) # 커스텀 클래스 기반 시각화 구역
@@ -134,9 +141,11 @@ class mainwindow(QMainWindow):
         BigLayout.addLayout(sortVisualCell, 1)
 
     # -----------------하단 구역 ( 기능 제어 구역 )--------------------
-        underButtonBox = QHBoxLayout()
-        bottomButtonBox = QHBoxLayout()
-        ButtonLayout = QVBoxLayout()
+        ButtonArea = QHBoxLayout()
+        AutoArea = QVBoxLayout()
+        AutoEachArea = QHBoxLayout()
+        EachStepArea = QVBoxLayout()
+        EachStepEachArea = QHBoxLayout()
 
         area1SortButton = QPushButton("Area 1 - Insert")
         area1SortButton.setStyleSheet("background-color: #aaaaff;")
@@ -150,30 +159,43 @@ class mainwindow(QMainWindow):
         area3SortButton.setStyleSheet("background-color: #aaaaff;")
         area3SortButton.clicked.connect(self.QuickRun)
 
-        allSortButton = QPushButton("Sort All")
+        allSortButton = QPushButton("Auto Sort All")
         allSortButton.setStyleSheet("background-color: #aaaaff;")
         allSortButton.clicked.connect(self.RunAll)
 
-        shuffleButton = QPushButton("Shuffle")
-        shuffleButton.setStyleSheet("background-color: #aaaaff;")
-        shuffleButton.clicked.connect(lambda: self.createRndlist(self.sortArea1, self.sortArea2, self.sortArea3))
+        AutoArea.addWidget(allSortButton, 1)
+        AutoArea.addLayout(AutoEachArea,1)
+        AutoEachArea.addWidget(area1SortButton, 1)
+        AutoEachArea.addWidget(area2SortButton, 1)
+        AutoEachArea.addWidget(area3SortButton, 1)
 
-        underButtonBox.addWidget(shuffleButton)
-        underButtonBox.addWidget(area1SortButton)
-        underButtonBox.addWidget(area2SortButton)
-        underButtonBox.addWidget(area3SortButton)
-        underButtonBox.addWidget(allSortButton)
+        ButtonArea.addLayout(AutoArea)
 
-        onestepButton = QPushButton("1 Step Progress")
-        onestepButton.setStyleSheet("background-color: #aaaaff;")
+        onestepButton = QPushButton("1 Step Progress - All")
+        onestepButton.setStyleSheet("background-color: #66ff66;")
         # onestepButton.clicked.connect() 일단 버튼 추가만 해놓기.
 
-        bottomButtonBox.addWidget(onestepButton)
+        onestep1Button = QPushButton("Area 1 - Insert")
+        onestep1Button.setStyleSheet("background-color: #66ff66;")
+        # onestep1Button.clicked.connect()
 
-        ButtonLayout.addLayout(underButtonBox)
-        ButtonLayout.addLayout(bottomButtonBox)
+        onestep2Button = QPushButton("Area 2 - Bubble")
+        onestep2Button.setStyleSheet("background-color: #66ff66;")
+        # onestep2Button.clicked.connect()
 
-        BigLayout.addLayout(ButtonLayout,0)
+        onestep3Button = QPushButton("Area 3 - Quick")
+        onestep3Button.setStyleSheet("background-color: #66ff66;")
+        # onestep3Button.clicked.connect()
+
+        EachStepArea.addWidget(onestepButton, 1)
+        EachStepArea.addLayout(EachStepEachArea, 1)
+        EachStepEachArea.addWidget(onestep1Button, 1)
+        EachStepEachArea.addWidget(onestep2Button, 1)
+        EachStepEachArea.addWidget(onestep3Button, 1)
+
+        ButtonArea.addLayout(EachStepArea)
+
+        BigLayout.addLayout(ButtonArea,0)
 
     # ------------------마감 구역 ( 시각화 처리 )-----------------------
         widget = QWidget()
