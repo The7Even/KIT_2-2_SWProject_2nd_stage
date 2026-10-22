@@ -5,6 +5,7 @@ import random
 
 class sortArea(QObject): # 64열 시각화 막대 그래프 구역
     # 윈도우 기본 크기 720중에서 640 할당. 뭐 부족하면 윈도우 좀 더 잡아당기지.
+    # 결국 720 > 810 확장 진행
     # 640 할당인데 2행이므로 한칸당 320 배정됨. 길이값 1당 5픽셀
     def __init__(self, sortArea: QHBoxLayout, Upper: QGridLayout, row, column):
         super().__init__()
