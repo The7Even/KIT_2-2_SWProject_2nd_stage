@@ -95,6 +95,27 @@ class mainwindow(QMainWindow):
         self.BubbleRun()
         self.QuickRun()
 
+    def CustomSenario(self, opt):
+        self.rndlist = []
+        if opt == 1:
+            for i in range(64):
+                self.rndlist.append(i)
+        if opt == 2:
+            for i in range(64):
+                self.rndlist.append(64-i)
+        if opt == 3:
+            self.rndlist = [
+                0, 63, 1, 62, 2, 61, 3, 60, 4, 59, 5, 58, 6, 57, 7, 56,
+                8, 55, 9, 54, 10, 53, 11, 52, 12, 51, 13, 50, 14, 49, 15, 48,
+                16, 47, 17, 46, 18, 45, 19, 44, 20, 43, 21, 42, 22, 41, 23, 40,
+                24, 39, 25, 38, 26, 37, 27, 36, 28, 35, 29, 34, 30, 33, 31, 32
+            ] # 퀵정렬에게 왔다갔다 똥개훈련을
+
+        self.sortArea1.AreaUpdate(self.rndlist)
+        self.sortArea2.AreaUpdate(self.rndlist)
+        self.sortArea3.AreaUpdate(self.rndlist)
+
+
     def ui_init(self): # 기초 UI 구성
         self.setFixedSize(1440, 810) # 가로 1280 - 세로 720의 16:9비
         self.setWindowTitle("Sort Algorithm Visualizer")
@@ -171,21 +192,20 @@ class mainwindow(QMainWindow):
 
         ButtonArea.addLayout(AutoArea)
 
-        onestepButton = QPushButton("1 Step Progress - All")
+        onestepButton = QPushButton("Special Sort Area")
         onestepButton.setStyleSheet("background-color: #66ff66;")
-        # onestepButton.clicked.connect() 일단 버튼 추가만 해놓기.
 
-        onestep1Button = QPushButton("Area 1 - Insert")
+        onestep1Button = QPushButton("1. Already Sorted")
         onestep1Button.setStyleSheet("background-color: #66ff66;")
-        # onestep1Button.clicked.connect()
+        onestep1Button.clicked.connect(lambda: self.CustomSenario(1))
 
-        onestep2Button = QPushButton("Area 2 - Bubble")
+        onestep2Button = QPushButton("2. Reverse-Sorted")
         onestep2Button.setStyleSheet("background-color: #66ff66;")
-        # onestep2Button.clicked.connect()
+        onestep2Button.clicked.connect(lambda: self.CustomSenario(2))
 
-        onestep3Button = QPushButton("Area 3 - Quick")
+        onestep3Button = QPushButton("3. Worst For Quick")
         onestep3Button.setStyleSheet("background-color: #66ff66;")
-        # onestep3Button.clicked.connect()
+        onestep3Button.clicked.connect(lambda: self.CustomSenario(3))
 
         EachStepArea.addWidget(onestepButton, 1)
         EachStepArea.addLayout(EachStepEachArea, 1)
