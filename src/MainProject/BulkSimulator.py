@@ -16,7 +16,7 @@ from PyQt6.QtGui import QUndoCommand
 sim_time = 10000
 
 # 출력 파일은 여기에 디렉토리 지정 (.csv 출력)
-sim_dir = 'C:\\Users\\USER\\Desktop\\KIT\\26-02 files\\SW프로젝트\\2nd stage'
+sim_dir = 'C:\\Users\\USER\\Desktop\\KIT\\26-02 files\\SW프로젝트\\2nd stage\\Project'
 
 QuickResult = [0,0,0]
 
