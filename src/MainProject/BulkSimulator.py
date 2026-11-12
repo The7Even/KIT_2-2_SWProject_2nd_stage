@@ -13,7 +13,7 @@ from PyQt6.QtGui import QUndoCommand
 # 그럼 이렇게 저장한다면?
 # 회차 Insert_array Insert_comp Insert_Runtime Insert_Rank 이하 4가지 요소 전부 추가.
 # 시행 횟수는 아래 변수에 값을 저장
-sim_time = 10000
+sim_time = 100000
 
 # 출력 파일은 여기에 디렉토리 지정 (.csv 출력)
 sim_dir = 'C:\\Users\\USER\\Desktop\\KIT\\26-02 files\\SW프로젝트\\2nd stage\\Project'
@@ -92,11 +92,16 @@ for k in range(sim_time):
     tarlst = beforelst.copy()
     BubbleResult = [0, 0]
     for i in range(63):  # 일단 여기는 종료 지점을 [63]에서 [1]까지 줄여야하기 때문에.. 총 63회 반복해야 함.
+        sortPro = 0
         for j in range(63 - i):  # 여기는 [0]과 [1], [1]과 [2]... 해서 끝까지 가는 반복문
             BubbleResult[1] += 1
             if tarlst[j] > tarlst[j + 1]:
                 BubbleResult[0] += 1
                 tarlst[j], tarlst[j + 1] = tarlst[j + 1], tarlst[j]  # 와 이런식으로도 바꿀수가 있네
+                sortPro = 1
+
+        if sortPro == 0:
+            break
 
     BubbleResult.append(BubbleResult[0]+BubbleResult[1])
     tarlst = beforelst.copy()
